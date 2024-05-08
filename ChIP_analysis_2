@@ -1,0 +1,75 @@
+#20240501GR_ChIP-seq analysis, SRM824476
+
+#copy fastq files to savicgrp directory
+
+find /research/dept/hart/PI_data_distribution/savicgrp/GSF/savicgrp_824476_ChIPseq-1 -name "*.fastq.gz" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1 {} +
+
+cd /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1
+
+#get sample names for sample sheet
+ls -1 *_R1_001.fastq.gz | cut -f 2,3,4,5,6,7 -d "_"
+
+#get .fastq file names
+ls -1 *_R1_001.fastq.gz
+ls -1 *_R2_001.fastq.gz
+
+bsub -P interactive -n 4 -R "rusage[mem=8000]" -q rhel8_interactive -Is bash
+module load nextflow/23.10.0
+nextflow pull nf-core/chipseq
+
+nextflow run nf-core/chipseq -r 2.0.0 -name ChIPseq_824476 -params-file nf-params.json -c nextflow.config -profile singularity --genome hg19
+
+bsub -P interactive -n 8 -R "rusage[mem=8000]" -q rhel8_interactive -Is bash
+
+#copy peak and bigwig files to working space
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/bigwig -name "*.bigWig" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space {} +
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/macs2/narrowPeak -name "*.narrowPeak" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space {} +
+
+#plot overview heatmaps
+module load deeptools/3.5.0
+
+#SEM BD611227
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SEM_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak SEM_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak \
+	SEM_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	-S SEM_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig SEM_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig SEM_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	--skipZeros -o refpoint_matrix_SEM_GR-BD_narrowPeak_allReps.gz \
+	--outFileSortedRegions SEM_GR-BD_narrowPeak_allReps_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SEM_GR-BD_narrowPeak_allReps.gz \
+	--colorMap Reds \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z SEM_GR-BD_Rep1_peaks SEM_GR-BD_Rep2_peaks SEM_GR-BD_Rep3_peaks \
+	--samplesLabel SEM_GR-BD_Rep1 SEM_GR-BD_Rep2 SEM_GR-BD_Rep3 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SEM_GR-BD_narrowPeak_heatmap_nearest.png 
+
+#SEM Diagenode
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SEM_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep1_peaks.narrowPeak SEM_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep2_peaks.narrowPeak SEM_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep3_peaks.narrowPeak \
+	-S SEM_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep1.bigWig SEM_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep2.bigWig SEM_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep3.bigWig \
+	--skipZeros -o refpoint_matrix_SEM_GR-DG_narrowPeak_allReps.gz \
+	--outFileSortedRegions SEM_GR-DG_narrowPeak_allReps_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SEM_GR-DG_narrowPeak_allReps.gz \
+	--colorMap Reds \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z SEM_GR-DG_Rep1_peaks SEM_GR-DG_Rep2_peaks SEM_GR-DG_Rep3_peaks \
+	--samplesLabel SEM_GR-DG_Rep1 SEM_GR-DG_Rep2 SEM_GR-DG_Rep3 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SEM_GR-DG_narrowPeak_heatmap_nearest.png 
+
+#SUPB15 Diagenode
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SUPB15_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep1_peaks.narrowPeak SUPB15_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep2_peaks.narrowPeak \
+	-S SUPB15_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep1.bigWig SUPB15_Dex1uM24hr_fixed_ChIP_GR-Diagenode_Rep2.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_GR-DG_narrowPeak_Reps1and2.gz \
+	--outFileSortedRegions SUPB15_GR-DG_narrowPeak_Reps1and2_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_GR-DG_narrowPeak_Reps1and2.gz \
+	--colorMap Oranges \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z SUPB15_GR-DG_Rep1_peaks SUPB15_GR-DG_Rep2_peaks \
+	--samplesLabel SUPB15_GR-DG_Rep1 SUPB15_GR-DG_Rep2 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_GR-DG_narrowPeak_heatmap_nearest.png
