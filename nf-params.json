@@ -1,0 +1,19 @@
+{
+    "input": "\/research_jude\/rgs01_jude\/groups\/savicgrp\/projects\/Drug_GRNs\/savicgrp\/savicgrp_824476_ChIPseq-1\/savicgrp_824476_ChIPseq_samplesheet.csv",
+    "read_length": 50,
+    "outdir": "\/research_jude\/rgs01_jude\/groups\/savicgrp\/projects\/Drug_GRNs\/savicgrp\/savicgrp_824476_ChIPseq-1\/nextflow_results",
+    "email": "bailey.tibben@stjude.org",
+    "multiqc_title": "824476_GR_ChIP",
+    "genome": "hg19",
+    "bowtie2_index": "\/research_jude\/rgs01_jude\/groups\/savicgrp\/projects\/Drug_GRNs\/savicgrp\/Genome_indices\/bowtie\/hg19_bt",
+    "blacklist": "\/research_jude\/rgs01_jude\/groups\/savicgrp\/projects\/Drug_GRNs\/savicgrp\/Genome_indices\/blacklists\/hg19-blacklist.v2.bed",
+    "aligner": "bowtie2",
+    "narrow_peak": true,
+    "macs_fdr": 0.05,
+    "min_reps_consensus": 2, 
+    "skip_peak_annotation": false,
+    "skip_consensus_peaks": false,
+    "skip_preseq": false,
+    "skip_plot_fingerprint": false,
+    "skip_deseq2_qc": false
+}
