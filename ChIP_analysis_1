@@ -1,0 +1,419 @@
+##20240329 GR ChIP analysis
+cd /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space
+
+bsub -P interactive -n 8 -R "rusage[mem=8000]" -q rhel8_interactive -Is bash
+module load deeptools/3.5.0
+
+#copy peak and bigwig files to working space
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/bigwig -name "*.bigWig" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space {} +
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/macs2/narrowPeak -name "*.narrowPeak" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space {} +
+
+#plot enrichment, frip scores
+#Nalm6 WT
+plotEnrichment -p max \
+	-b Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.mLb.clN.sorted.bam Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.mLb.clN.sorted.bam Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.mLb.clN.sorted.bam \
+	--BED Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	--labels Nalm6_WT_Rep1 Nalm6_WT_Rep2 Nalm6_WT_Rep3 \
+	--regionLabels Rep1 Rep2 Rep3 \
+	-o Nalm6_WT_3reps_narrowPeak_enrichment.png \
+	--outRawCounts Nalm6_WT_enrichment_counts.tsv
+
+#Nalm6 1B2, TLE1 KO1
+plotEnrichment -p max \
+	-b Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.mLb.clN.sorted.bam Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.mLb.clN.sorted.bam Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.mLb.clN.sorted.bam \
+	--BED Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	--labels Nalm6_1B2_Rep1 Nalm6_1B2_Rep2 Nalm6_1B2_Rep3 \
+	--regionLabels Rep1 Rep2 Rep3 \
+	-o Nalm6_1B2_3reps_narrowPeak_enrichment.png \
+	--outRawCounts Nalm6_1B2_enrichment_counts.tsv
+
+#Nalm6 4B8, TLE1 KO2
+plotEnrichment -p max \
+	-b Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.mLb.clN.sorted.bam Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.mLb.clN.sorted.bam Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.mLb.clN.sorted.bam \
+	--BED Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	--labels Nalm6_4B8_Rep1 Nalm6_4B8_Rep2 Nalm6_4B8_Rep3 \
+	--regionLabels Rep1 Rep2 Rep3 \
+	-o Nalm6_4B8_3reps_narrowPeak_enrichment.png \
+	--outRawCounts Nalm6_4B8_enrichment_counts.tsv
+
+#SUPB15
+plotEnrichment -p max \
+	-b SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.mLb.clN.sorted.bam SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.mLb.clN.sorted.bam SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.mLb.clN.sorted.bam \
+	--BED SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	--labels SUPB15_Rep1 SUPB15_Rep2 SUPB15_Rep3 \
+	--regionLabels Rep1 Rep2 Rep3 \
+	-o SUPB15_3reps_narrowpeak_enrichment.png \
+	--outRawCounts SUPB15_enrichment_counts.tsv
+
+#BALL1
+plotEnrichment -p max \
+	-b BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.mLb.clN.sorted.bam BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.mLb.clN.sorted.bam BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.mLb.clN.sorted.bam \
+	--BED BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	--labels BALL1_Rep1 BALL1_Rep2 BALL1_Rep3 --regionLabels Rep1 Rep2 Rep3 -o BALL1_3reps_narrowpeak_enrichment.png --outRawCounts BALL1_enrichment_counts.tsv
+
+#697 (Brennan's data)
+plotEnrichment -p max \
+	-b 697_Parental_Ctrl_Rep1_A1.mLb.clN.sorted.bam 697_Parental_Ctrl_Rep2_A1.mLb.clN.sorted.bam 697_Parental_Ctrl_Rep3_A1.mLb.clN.sorted.bam 697_Parental_Ctrl_Rep4_A1.mLb.clN.sorted.bam \
+	--BED 697_Parental_Ctrl_Rep1_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep2_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep3_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep4_A1_peaks.narrowPeak \
+	--labels 697_Rep1 697_Rep2 697_Rep3 697_Rep4 \
+	--regionLabels Rep1 Rep2 Rep3 Rep4 \
+	-o 697_4reps_narrowPeak_enrichment.png \
+	--outRawCounts 697_enrichment_counts.tsv
+
+#compute matrix for Nalm6 signal at WT and KO peaks, keep reps separate to start
+#Nalm6 WT
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak \
+	-S Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4.bigWig \
+	Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WT_narrowPeak_WTandKO_newReps.gz \
+	--outFileSortedRegions Nalm6_WTandKO_at_WTnarrowPeak_newReps_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_Nalm6_WT_narrowPeak_WTandKO_newReps.gz \
+	--colorMap viridis \
+	--interpolationMethod nearest \
+	-x distance -z WT_Rep1_peaks WT_Rep2_peaks \
+	--samplesLabel WT_Rep1 WT_Rep2 KO1_Rep2 KO1_Rep3 KO1_Rep4 KO2_Rep1 KO2_Rep2 KO2_Rep4 \
+	-out refpoint_matrix_Nalm6_WTandKO_newReps_atWT_narrowPeak_heatmap_nearest.png
+
+#Nalm6 KO1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4_peaks.narrowPeak \
+	-S Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4.bigWig \
+	Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_1B2_narrowPeak_WTandKO_newReps.gz \
+	--outFileSortedRegions Nalm6_WTandKO_at_1B2narrowPeak_newReps_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_1B2_narrowPeak_WTandKO_newReps.gz \
+	--colorMap viridis \
+	-x distance -z KO1_Rep2_peaks KO1_Rep3_peaks KO1_Rep4_peaks \
+	--samplesLabel WT_Rep1 WT_Rep2 KO1_Rep2 KO1_Rep3 KO1_Rep4 KO2_Rep1 KO2_Rep2 KO2_Rep4 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm61B2_narrowPeak_WTandKO_newReps_heatmap_nearest.png
+
+#Nalm6 KO2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4_peaks.narrowPeak \
+	-S Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4.bigWig \
+	Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep4.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_4B8_narrowPeak_WTandKO_newReps.gz \
+	--outFileSortedRegions Nalm6_WTandKO_at_4B8narrowPeak_newReps_sorted.bed
+ 
+plotHeatmap -m refpoint_matrix_Nalm6_4B8_narrowPeak_WTandKO_newReps.gz \
+	--colorMap viridis \
+	-x distance -z KO2_Rep1_peaks KO2_Rep2_peaks KO2_Rep4_peaks \
+	--samplesLabel WT_Rep1 WT_Rep2 KO1_Rep2 KO1_Rep3 KO1_Rep4 KO2_Rep1 KO2_Rep2 KO2_Rep4 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm64B8_narrowPeak_WTandKO_newReps_heatmap_nearest.png
+
+#SUPB15
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 \
+	-R SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak \
+	SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	-S SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_3reps_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_3reps_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_3reps_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z SUPB15_Rep1_peaks SUPB15_Rep2_peaks SUPB15_Rep3_peaks \
+	--samplesLabel SUPB15_Rep1 SUPB15_Rep2 SUPB15_Rep3 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_3reps_narrowPeak_heatmap_nearest_edit.png
+
+#BALL1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 \
+	-R BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak \
+	-S BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	--skipZeros -o refpoint_matrix_BALL1_3reps_narrowPeak.gz \
+	--outFileSortedRegions BALL1_3reps_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_3reps_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z BALL1_Rep1_peaks BALL1_Rep2_peaks BALL1_Rep3_peaks \
+	--samplesLabel BALL1_Rep1 BALL1_Rep2 BALL1_Rep3 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_3reps_narrowPeak_heatmap_nearest_edit.png
+
+#697 (Brennan's data)
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R 697_Parental_Ctrl_Rep1_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep2_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep3_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep4_A1_peaks.narrowPeak \
+	-S 697_Parental_Ctrl_Rep1_A1.bigWig 697_Parental_Ctrl_Rep2_A1.bigWig 697_Parental_Ctrl_Rep3_A1.bigWig 697_Parental_Ctrl_Rep4_A1.bigWig \
+	--skipZeros -o refpoint_matrix_697_4reps_narrowPeak.gz \
+	--outFileSortedRegions 697_4reps_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_697_4reps_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z 697_Rep1_peaks 697_Rep2_peaks 697_Rep3_peaks 697_Rep4_peaks \
+	--samplesLabel 697_Rep1 697_Rep2 697_Rep3 697_Rep4 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_697_4reps_narrowPeak_heatmap_nearest.png
+
+#Find consensus and overlapping peaks across reps
+#start with bedtools for Nalm6, currently only have 2 reps each
+module load bedtools/2.25.0  
+
+#Nalm6 WT
+bedtools intersect -a Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak -b Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak > Nalm6_WT_Rep1_INTERSECT_Rep2_narrowPeak.bed
+bedtools intersect -a Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak -b Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak > Nalm6_1B2_Rep2_INTERSECT_Rep3_narrowPeak.bed
+bedtools intersect -a Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak -b Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak > Nalm6_4B8_Rep1_INTERSECT_Rep2_narrowPeak.bed
+
+#Merge replicate peaks with HOMER
+module load homer/4.10
+mergePeaks Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak > Nalm6_WT_Dex_GR-BD_Rep1_Rep2_merge.bed
+mergePeaks Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak > Nalm6_1B2_Dex_GR-BD_Rep2_Rep3_merge.bed
+mergePeaks Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak > Nalm6_4B8_Dex_GR-BD_Rep1_Rep2_merge.bed
+mergePeaks SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak > SUPB15_Dex_GR-BD_AllReps_merge.bed
+mergePeaks BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1_peaks.narrowPeak BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2_peaks.narrowPeak BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3_peaks.narrowPeak > BALL1_Dex_GR-BD_AllReps_merge.bed
+mergePeaks 697_Parental_Ctrl_Rep1_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep2_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep3_A1_peaks.narrowPeak 697_Parental_Ctrl_Rep4_A1_peaks.narrowPeak > 697_GR-BD_AllReps_merge.bed
+
+#compute matrix, GR at LEF1 peaks
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/bigwig -name "*.bigWig" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space/GR_and_LEF1 {} +
+
+#SUPB15
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_SUPB15_Dex_R1.macs2_peaks.narrowPeak \
+	-S SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_3reps_atLEF1_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_3reps_atLEF1_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_3reps_atLEF1_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--samplesLabel SUPB15_GR-BD_Rep1 SUPB15_GR-BD_Rep2 SUPB15_GR-BD_Rep3 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_GR-BD_atLEF1_narrowPeak_heatmap_nearest.png
+
+#BALL1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_BALL1_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_BALL1_Dex_R1.macs2_peaks.narrowPeak \
+	-S BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	--skipZeros -o refpoint_matrix_BALL1_3reps_atLEF1_narrowPeak.gz \
+	--outFileSortedRegions BALL1_3reps_atLEF1_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_3reps_atLEF1_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z BALL1_LEF1_veh BALL1_LEF1_dex \
+	--samplesLabel BALL1_GR-BD_Rep1 BALL1_GR-BD_Rep2 BALL1_GR-BD_Rep3 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_GR-BD_atLEF1_narrowPeak_heatmap_nearest.png
+
+#697
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R 697_veh_CNR_LEF1_CST2230_R1.macs2_peaks.narrowPeak 697_Dex1uM24hr_CNR_LEF1_CST2230_R1.macs2_peaks.narrowPeak \
+	-S 697_Parental_Ctrl_Rep1_A1.bigWig 697_Parental_Ctrl_Rep2_A1.bigWig 697_Parental_Ctrl_Rep3_A1.bigWig 697_Parental_Ctrl_Rep4_A1.bigWig \
+	--skipZeros -o refpoint_matrix_697_4reps_atLEF1_narrowPeak.gz \
+	--outFileSortedRegions 697_4reps_atLEF1_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_697_4reps_atLEF1_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z 697_LEF1_veh 697_LEF1_dex \
+	--samplesLabel 697_GR-BD_Rep1 697_GR-BD_Rep2 697_GR-BD_Rep3 697_GR-BD_Rep4 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_697_GR-BD_atLEF1_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT and KO at WT LEF1 peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_Dex_R1.macs2_peaks.narrowPeak \
+	-S Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atWT_LEF1_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atWT_LEF1_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atWT_LEF1_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex \
+	--samplesLabel WT_GR-BD_Rep1 WT_GR-BD_Rep2 KO1_GR-BD_Rep2 KO1_GR-BD_Rep3 KO2_GR-BD_Rep1 KO2_GR-BD_Rep2 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_atWT_LEF1_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT and KO at KO1 LEF1 peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.macs2_peaks.narrowPeak \
+	-S Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atKO1_LEF1_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex \
+	--samplesLabel WT_GR-BD_Rep1 WT_GR-BD_Rep2 KO1_GR-BD_Rep2 KO1_GR-BD_Rep3 KO2_GR-BD_Rep1 KO2_GR-BD_Rep2 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT and KO at KO2 LEF1 peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.macs2_peaks.narrowPeak \
+	-S Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atKO2_LEF1_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_narrowPeak.gz \
+	--colorMap viridis \
+	-x distance -z Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex \
+	--samplesLabel WT_GR-BD_Rep1 WT_GR-BD_Rep2 KO1_GR-BD_Rep2 KO1_GR-BD_Rep3 KO2_GR-BD_Rep1 KO2_GR-BD_Rep2 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_narrowPeak_heatmap_nearest.png
+
+#overlap GR and LEF1 peaks 
+module load bedtools/2.25.0  
+
+#SUPB15
+bedtools intersect -a SUPB15_Dex_GR-BD_AllReps_merge_edit.bed -b CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak > SUPB15_GR-BD_merge_INTERSECT_SUPB15_LEF1_veh_narrowPeak.bed
+bedtools intersect -a SUPB15_Dex_GR-BD_AllReps_merge_edit.bed -b CnR_LEF1_SUPB15_Dex_R1.macs2_peaks.narrowPeak > SUPB15_GR-BD_merge_INTERSECT_SUPB15_LEF1_dex_narrowPeak.bed
+
+#BALL1 
+bedtools intersect -a BALL1_Dex_GR-BD_AllReps_merge_edit.bed -b CnR_LEF1_BALL1_Vehicle_R1.macs2_peaks.narrowPeak > BALL1_GR-BD_merge_INTERSECT_BALL1_LEF1_veh_narrowPeak.bed
+bedtools intersect -a BALL1_Dex_GR-BD_AllReps_merge_edit.bed -b CnR_LEF1_BALL1_Dex_R1.macs2_peaks.narrowPeak > BALL1_GR-BD_merge_INTERSECT_BALL1_LEF1_dex_narrowPeak.bed
+
+#697
+bedtools intersect -a 697_GR-BD_AllReps_merge_edit.bed -b 697_veh_CNR_LEF1_CST2230_R1.macs2_peaks.narrowPeak > 697_GR-BD_merge_INTERSECT_697_LEF1_veh_narrowPeak.bed
+bedtools intersect -a 697_GR-BD_AllReps_merge_edit.bed -b 697_Dex1uM24hr_CNR_LEF1_CST2230_R1.macs2_peaks.narrowPeak > 697_GR-BD_merge_INTERSECT_697_LEF1_dex_narrowPeak.bed
+
+#Nalm6 WT
+bedtools intersect -a Nalm6_WT_Dex_GR-BD_Rep1_Rep2_merge_edit.bed -b CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak > Nalm6_WT_GR-BD_merge_INTERSECT_Nalm6_WT_LEF1_veh_narrowPeak.bed
+bedtools intersect -a Nalm6_WT_Dex_GR-BD_Rep1_Rep2_merge_edit.bed -b CnR_LEF1_Nalm6_Dex_R1.macs2_peaks.narrowPeak > Nalm6_WT_GR-BD_merge_INTERSECT_Nalm6_WT_LEF1_dex_narrowPeak.bed
+
+#Nalm6 1B2 KO1
+bedtools intersect -a Nalm6_1B2_Dex_GR-BD_Rep2_Rep3_merge_edit.bed -b CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak > Nalm6_TLE1KO1_GR-BD_merge_INTERSECT_Nalm6_TLE1KO1_LEF1_veh_narrowPeak.bed
+bedtools intersect -a Nalm6_1B2_Dex_GR-BD_Rep2_Rep3_merge_edit.bed -b CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.macs2_peaks.narrowPeak > Nalm6_TLE1KO1_GR-BD_merge_INTERSECT_Nalm6_TLE1KO1_LEF1_dex_narrowPeak.bed
+
+#Nalm6 4B8 KO2
+bedtools intersect -a Nalm6_4B8_Dex_GR-BD_Rep1_Rep2_merge_edit.bed -b CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak > Nalm6_TLE1KO2_GR-BD_merge_INTERSECT_Nalm6_TLE1KO2_LEF1_veh_narrowPeak.bed
+bedtools intersect -a Nalm6_4B8_Dex_GR-BD_Rep1_Rep2_merge_edit.bed -b CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.macs2_peaks.narrowPeak > Nalm6_TLE1KO2_GR-BD_merge_INTERSECT_Nalm6_TLE1KO2_LEF1_dex_narrowPeak.bed
+
+#create bigwig averages for GR reps
+#SUPB15
+bigwigAverage --bigwigs SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig SUPB15_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	-p max \
+	-o SUPB15_Dex_GR-BD_AllReps_avg.bw
+
+#BALL1
+bigwigAverage --bigwigs BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig BALL1_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	-p max \
+	-o BALL1_Dex_GR-BD_AllReps_avg.bw
+
+#697
+bigwigAverage --bigwigs 697_Parental_Ctrl_Rep1_A1.bigWig 697_Parental_Ctrl_Rep2_A1.bigWig 697_Parental_Ctrl_Rep3_A1.bigWig 697_Parental_Ctrl_Rep4_A1.bigWig \
+	-p max \
+	-o 697_Dex_GR-BD_AllReps_avg.bw
+
+#Nalm6 WT
+bigwigAverage --bigwigs Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_WT_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	-p max \
+	-o Nalm6_WT_Dex_GR-BD_Rep1_Rep2_avg.bw
+
+#Nalm6 1B2
+bigwigAverage --bigwigs Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig Nalm6_TLE1KO-1B2_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep3.bigWig \
+	-p max \
+	-o Nalm6_TLE1KO_1B2_Dex_GR-BD_Rep2_Rep3_avg.bw
+
+#Nalm6 4B8
+bigwigAverage --bigwigs Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep1.bigWig Nalm6_TLE1KO-4B8_Dex1uM24hr_fixed_ChIP_GR-BD611227_Rep2.bigWig \
+	-p max \
+	-o Nalm6_TLE1KO_4B8_Dex_GR-BD_Rep1_Rep2_avg.bw
+
+#compute matrix at overlapping GR and LEF1 peaks
+#SUPB15
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SUPB15_GR-BD_merge_INTERSECT_SUPB15_LEF1_veh_narrowPeak.bed SUPB15_GR-BD_merge_INTERSECT_SUPB15_LEF1_dex_narrowPeak.bed \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig SUPB15_Dex_GR-BD_AllReps_avg.bw \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_LEF1_VehandDex_GR-BD_overlap_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--colorMap plasma plasma viridis \
+	-x distance -z SUPB15_GR-BD_overlap_LEF1_veh SUPB15_GR-BD_overlap_LEF1_dex \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex SUPB15_GR-BD_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_VehandDex_GR-BD_overlap_heatmap_nearest.png
+
+#BALL1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R BALL1_GR-BD_merge_INTERSECT_BALL1_LEF1_veh_narrowPeak.bed BALL1_GR-BD_merge_INTERSECT_BALL1_LEF1_dex_narrowPeak.bed \
+	-S CnR_LEF1_BALL1_Vehicle_R1.bigWig CnR_LEF1_BALL1_Dex_R1.bigWig BALL1_Dex_GR-BD_AllReps_avg.bw \
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--outFileSortedRegions BALL1_LEF1_VehandDex_GR-BD_overlap_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--colorMap plasma plasma viridis \
+	-x distance -z BALL1_GR-BD_overlap_LEF1_veh BALL1_GR-BD_overlap_LEF1_dex \
+	--samplesLabel BALL1_LEF1_veh BALL1_LEF1_dex BALL1_GR-BD_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_VehandDex_GR-BD_overlap_heatmap_nearest.png
+
+#697
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R 697_GR-BD_merge_INTERSECT_697_LEF1_veh_narrowPeak.bed 697_GR-BD_merge_INTERSECT_697_LEF1_dex_narrowPeak.bed \
+	-S 697_veh_CNR_LEF1_CST2230_R1.bigWig 697_Dex1uM24hr_CNR_LEF1_CST2230_R1.bigWig 697_Dex_GR-BD_AllReps_avg.bw \
+	--skipZeros -o refpoint_matrix_697_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--outFileSortedRegions 697_LEF1_VehandDex_GR-BD_overlap_sorted.bed
+
+plotHeatmap -m refpoint_matrix_697_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--colorMap plasma plasma viridis \
+	-x distance -z 697_GR-BD_overlap_LEF1_veh 697_GR-BD_overlap_LEF1_dex \
+	--samplesLabel 697_LEF1_veh 697_LEF1_dex 697_GR-BD_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_697_LEF1_VehandDex_GR-BD_overlap_heatmap_nearest.png
+
+#Nalm6 WT
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_WT_GR-BD_merge_INTERSECT_Nalm6_WT_LEF1_veh_narrowPeak.bed Nalm6_WT_GR-BD_merge_INTERSECT_Nalm6_WT_LEF1_dex_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig Nalm6_WT_Dex_GR-BD_Rep1_Rep2_avg.bw \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig Nalm6_TLE1KO_1B2_Dex_GR-BD_Rep2_Rep3_avg.bw \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig Nalm6_TLE1KO_4B8_Dex_GR-BD_Rep1_Rep2_avg.bw \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atWT_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atWT_LEF1_VehandDex_GR-BD_overlap_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atWT_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--colorMap plasma plasma viridis \
+	-x distance -z Nalm6_WT_GR-BD_overlap_LEF1_veh Nalm6_WT_GR-BD_overlap_LEF1_dex \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex Nalm6_WT_GR-BD_dex \
+	Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex Nalm6_KO1_GR-BD_dex \
+	Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex Nalm6_KO2_GR-BD_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_atWT_LEF1_VehandDex_GR-BD_overlap_heatmap_nearest.png
+
+#Nalm6 1B2 KO1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO1_GR-BD_merge_INTERSECT_Nalm6_TLE1KO1_LEF1_veh_narrowPeak.bed Nalm6_TLE1KO1_GR-BD_merge_INTERSECT_Nalm6_TLE1KO1_LEF1_dex_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig Nalm6_WT_Dex_GR-BD_Rep1_Rep2_avg.bw \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig Nalm6_TLE1KO_1B2_Dex_GR-BD_Rep2_Rep3_avg.bw \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig Nalm6_TLE1KO_4B8_Dex_GR-BD_Rep1_Rep2_avg.bw \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atKO1_LEF1_VehandDex_GR-BD_overlap_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--colorMap plasma plasma viridis \
+	-x distance -z Nalm6_KO1_GR-BD_overlap_LEF1_veh Nalm6_KO1_GR-BD_overlap_LEF1_dex \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex Nalm6_WT_GR-BD_dex \
+	Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex Nalm6_KO1_GR-BD_dex \
+	Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex Nalm6_KO2_GR-BD_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_VehandDex_GR-BD_overlap_heatmap_nearest.png
+
+#Nalm6 4B8 KO2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO2_GR-BD_merge_INTERSECT_Nalm6_TLE1KO2_LEF1_veh_narrowPeak.bed Nalm6_TLE1KO2_GR-BD_merge_INTERSECT_Nalm6_TLE1KO2_LEF1_dex_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig Nalm6_WT_Dex_GR-BD_Rep1_Rep2_avg.bw \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig Nalm6_TLE1KO_1B2_Dex_GR-BD_Rep2_Rep3_avg.bw \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig Nalm6_TLE1KO_4B8_Dex_GR-BD_Rep1_Rep2_avg.bw \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atKO2_LEF1_VehandDex_GR-BD_overlap_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_VehandDex_GR-BD_overlap_narrowPeak.gz \
+	--colorMap plasma plasma viridis \
+	-x distance -z Nalm6_KO2_GR-BD_overlap_LEF1_veh Nalm6_KO2_GR-BD_overlap_LEF1_dex \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex Nalm6_WT_GR-BD_dex \
+	Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex Nalm6_KO1_GR-BD_dex \
+	Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex Nalm6_KO2_GR-BD_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_VehandDex_GR-BD_overlap_heatmap_nearest.png
