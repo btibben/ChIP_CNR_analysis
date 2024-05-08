@@ -1,0 +1,755 @@
+##20240408 LEF1 CUT&RUN analysis, Jackson and Kashi submitted
+
+bsub -P interactive -n 8 -R "rusage[mem=8000]" -q rhel8_interactive -Is bash
+module load deeptools/3.5.0
+
+#submit nextflow pipeline to get seacr stringent peaks
+nextflow run nf-core/cutandrun -r 3.2.2 -resume CnR_LEF1_Dex_822164 -profile singularity -work-dir ./work -params-file nf-params.json -c nextflow.config
+
+cd /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822164_CutRun-1/nextflow_results/working_space_BT
+
+#copy files to working space
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822164_CutRun-1/nextflow_results/04_reporting/igv -name "*.bigWig" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822164_CutRun-1/nextflow_results/working_space_BT {} +
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822164_CutRun-1/nextflow_results/03_peak_calling/04_called_peaks/macs2 -name "*.narrowPeak" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822164_CutRun-1/nextflow_results/working_space_BT {} +
+find /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822164_CutRun-1/nextflow_results/03_peak_calling/04_called_peaks/seacr -name "*stringent.bed" -type f -exec cp -t /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822164_CutRun-1/nextflow_results/working_space_BT {} +
+
+#frip scores
+#SUPB15, macs2
+plotEnrichment -p max \
+	-b CnR_LEF1_SUPB15_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_SUPB15_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_SUPB15_Dex_R1.macs2_peaks.narrowPeak \
+	--labels SUPB15.veh SUPB15.dex --regionLabels Vehicle Dex -o SUPB15_VehandDex_narrowPeak_enrichment.png --outRawCounts SUPB15_enrichment_counts.tsv
+
+#SUPB15, seacr
+plotEnrichment -p max \
+	-b CnR_LEF1_SUPB15_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_SUPB15_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_SUPB15_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_SUPB15_Dex_R1.seacr.peaks.relaxed.bed \
+	CnR_LEF1_SUPB15_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_SUPB15_Dex_R1.seacr.peaks.stringent.bed \
+	--labels SUPB15.veh SUPB15.dex --regionLabels Vehicle_sr Dex_sr Vehicle_ss Dex_ss -o SUPB15_VehandDex_seacr_enrichment.png --outRawCounts SUPB15_seacr_enrichment_counts.tsv
+
+#BALL1, macs2
+plotEnrichment -p max \
+	-b CnR_LEF1_BALL1_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_BALL1_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_BALL1_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_BALL1_Dex_R1.macs2_peaks.narrowPeak \
+	--labels BALL1.veh BALL1.dex --regionLabels Vehicle Dex -o BALL1_VehandDex_narrowPeak_enrichment.png --outRawCounts BALL1_enrichment_counts.tsv
+	
+#BALL1, seacr
+plotEnrichment -p max \
+	-b CnR_LEF1_BALL1_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_BALL1_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_BALL1_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_BALL1_Dex_R1.seacr.peaks.relaxed.bed \
+	CnR_LEF1_BALL1_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_BALL1_Dex_R1.seacr.peaks.stringent.bed \
+	--labels BALL1.veh BALL1.dex --regionLabels Vehicle_sr Dex_sr Vehicle_ss Dex_ss -o BALL1_VehandDex_seacr_enrichment.png --outRawCounts BALL1_seacr_enrichment_counts.tsv
+
+#Nalm6 WT, macs2
+plotEnrichment -p max \
+	-b CnR_LEF1_Nalm6_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_Nalm6_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_Dex_R1.macs2_peaks.narrowPeak \
+	--labels Nalm6_WT.veh Nalm6_WT.dex --regionLabels Vehicle Dex -o Nalm6_WT_VehandDex_narrowPeak_enrichment.png --outRawCounts Nalm6_WT_enrichment_counts.tsv
+
+#Nalm6 WT, seacr
+plotEnrichment -p max \
+	-b CnR_LEF1_Nalm6_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_Nalm6_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_Nalm6_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_Nalm6_Dex_R1.seacr.peaks.relaxed.bed \
+	CnR_LEF1_Nalm6_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_Nalm6_Dex_R1.seacr.peaks.stringent.bed \
+	--labels Nalm6_WT.veh Nalm6_WT.dex --regionLabels Vehicle_sr Dex_sr Vehicle_ss Dex_ss -o Nalm6_WT_VehandDex_seacr_enrichment.png --outRawCounts Nalm6_WT_seacr_enrichment_counts.tsv
+
+#Nalm6 TLE1 KO1, macs2
+plotEnrichment -p max \
+	-b CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.macs2_peaks.narrowPeak \
+	--labels Nalm6_TLE1KO1.veh Nalm6_TLE1KO1.dex --regionLabels Vehicle Dex -o Nalm6_TLE1KO1_VehandDex_narrowPeak_enrichment.png --outRawCounts Nalm6_TLE1KO1_enrichment_counts.tsv
+
+#Nalm6 TLE1 KO1, seacr
+plotEnrichment -p max \
+	-b CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.seacr.peaks.relaxed.bed \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.seacr.peaks.stringent.bed \
+	--labels Nalm6_TLE1KO1.veh Nalm6_TLE1KO1.dex --regionLabels Vehicle_sr Dex_sr Vehicle_ss Dex_ss -o Nalm6_TLE1KO1_VehandDex_seacr_enrichment.png --outRawCounts Nalm6_TLE1KO1_seacr_enrichment_counts.tsv
+
+#Nalm6 TLE1 KO2, macs2
+plotEnrichment -p max \
+	-b CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.macs2_peaks.narrowPeak \
+	--labels Nalm6_TLE1KO2.veh Nalm6_TLE1KO2.dex --regionLabels Vehicle Dex -o Nalm6_TLE1KO2_VehandDex_narrowPeak_enrichment.png --outRawCounts Nalm6_TLE1KO2_enrichment_counts.tsv
+
+#Nalm6 TLE1 KO2, seacr
+plotEnrichment -p max \
+	-b CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.target.markdup.sorted.bam CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.target.markdup.sorted.bam \
+	--BED CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.seacr.peaks.relaxed.bed \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.seacr.peaks.stringent.bed \
+	--labels Nalm6_TLE1KO2.veh Nalm6_TLE1KO1.dex --regionLabels Vehicle_sr Dex_sr Vehicle_ss Dex_ss -o Nalm6_TLE1KO2_VehandDex_seacr_enrichment.png --outRawCounts Nalm6_TLE1KO2_seacr_enrichment_counts.tsv
+
+#plot heatmaps for LEF1 in each cell line, veh and Dex
+
+#BALL1, macs2 
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_BALL1_Vehicle_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_BALL1_Vehicle_R1.bigWig CnR_LEF1_BALL1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--outFileSortedRegions BALL1_VehandDex_atVeh_narrowPeak_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--colorMap Greys \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z BALL1_LEF1_veh_macs2 \
+	--samplesLabel BALL1_LEF1_veh BALL1_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_VehandDex_atVeh_narrowPeak_heatmap_nearest_white.png
+
+#BALL1, seacr relaxed
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 \
+	-R CnR_LEF1_BALL1_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_BALL1_Dex_R1.seacr.peaks.relaxed.bed \
+	-S CnR_LEF1_BALL1_Vehicle_R1.bigWig CnR_LEF1_BALL1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_seacr_relaxed_VehandDex.gz \
+	--outFileSortedRegions BALL1_VehandDex_seacr_relaxed_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_seacr_relaxed_VehandDex.gz \
+	--colorMap Greys \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z BALL1_LEF1_veh_seacr BALL1_LEF1_dex_seacr \
+	--samplesLabel BALL1_LEF1_veh BALL1_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_seacr_relaxed_VehandDex_heatmap.png
+
+#BALL1, seacr stringent
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_BALL1_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_BALL1_Dex_R1.seacr.peaks.stringent.bed \
+	-S CnR_LEF1_BALL1_Vehicle_R1.bigWig CnR_LEF1_BALL1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_seacr_stringent_VehandDex.gz \
+	--outFileSortedRegions BALL1_VehandDex_seacr_stringent_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_seacr_stringent_VehandDex.gz \
+	--colorMap Greys \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z BALL1_LEF1_veh_seacr BALL1_LEF1_dex_seacr \
+	--samplesLabel BALL1_LEF1_veh BALL1_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_seacr_stringent_VehandDex_heatmap_nearest.png
+
+#SUPB15, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_SUPB15_Dex_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_narrowPeak_VehandDex.gz \
+	--outFileSortedRegions SUPB15_VehandDex_narrowPeak_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_narrowPeak_VehandDex.gz \
+	--colorMap plasma \
+	-x distance -z SUPB15_LEF1_veh_macs2 SUPB15_LEF1_dex_macs2 \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_narrowPeak_VehandDex_heatmap_nearest.png
+	
+#remove Dex peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_narrowPeak_VehandDex_atVeh_mda0.gz \
+	--outFileSortedRegions SUPB15_VehandDex__atVeh_narrowPeak_sorted_mda0.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_narrowPeak_VehandDex_atVeh.gz \
+	--colorMap Oranges \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z SUPB15_LEF1_veh_macs2 \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_narrowPeak_VehandDex_atVeh_heatmap_nearest_white.png
+
+#SUPB15, seacr relaxed
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_SUPB15_Dex_R1.seacr.peaks.relaxed.bed \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_seacr_relaxed_VehandDex.gz \
+	--outFileSortedRegions SUPB15_VehandDex_seacr_relaxed_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_seacr_relaxed_VehandDex.gz \
+	--colorMap Oranges \
+	-x distance -z SUPB15_LEF1_veh_seacr_relaxed \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_seacr_relaxed_VehandDex_heatmap_nearest_larger.png
+	
+#remove Dex peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.seacr.peaks.relaxed.bed \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_seacr_relaxed_VehandDex_atVeh.gz \
+	--outFileSortedRegions SUPB15_VehandDex_atVeh_seacr_relaxed_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_seacr_relaxed_VehandDex_atVeh.gz \
+	--colorMap Oranges \
+	-x distance -z SUPB15_LEF1_veh_seacr_relaxed \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_seacr_relaxed_VehandDex_atVeh_heatmap_nearest.png
+	
+#SUPB15, seacr stringent
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_SUPB15_Dex_R1.seacr.peaks.stringent.bed \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_seacr_stringent_VehandDex.gz \
+	--outFileSortedRegions SUPB15_VehandDex_seacr_stringent_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_seacr_stringent_VehandDex.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_seacr_stringent_VehandDex_heatmap_nearest.png
+
+#Nalm6 WT, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_VehandDex_atWTVeh_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO1_LEF1_VehandDex_atWTVeh_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO1_LEF1_VehandDex__atWTVeh_narrowPeak.gz \
+	--colorMap Blues Blues Purples Purples \
+	--missingDataColor "#FFFFFF" \
+	-x distance -z Nalm6_WT_LEF1_veh_macs2 \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex \
+	Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO1_VehandDex_atWTVeh_narrowPeak_heatmap_nearest_white.png
+	
+#Nalm6 WT only
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WT_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WT_LEF1_VehandDex_atVeh_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WT_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--colorMap Blues \
+	--missingDataColor "#E0E0E0" \
+	-x distance -z Nalm6_WT_LEF1_veh_macs2 \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WT_VehandDex_atVeh_narrowPeak_heatmap_nearest_grey.png
+
+#Nalm6 KO1 only
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO1_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO1_LEF1_VehandDex_atVeh_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO1_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--colorMap Purples \
+	--missingDataColor "#E0E0E0" \
+	-x distance -z Nalm6_TLE1KO1_LEF1_veh_macs2 \
+	--samplesLabel Nalm6_TLE1KO1_veh Nalm6_TLE1KO1_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO1_VehandDex_atVeh_narrowPeak_heatmap_nearest_grey.png
+	
+#Nalm6 KO2 only
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO2_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO2_LEF1_VehandDex_atVeh_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO2_LEF1_VehandDex_atVeh_narrowPeak.gz \
+	--colorMap Purples \
+	--missingDataColor "#E0E0E0" \
+	-x distance -z Nalm6_TLE1KO2_LEF1_veh_macs2 \
+	--samplesLabel Nalm6_TLE1KO2_veh Nalm6_TLE1KO2_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO2_VehandDex_atVeh_narrowPeak_heatmap_nearest_grey.png
+
+#Nalm6 WT, seacr relaxed
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_Vehicle_R1.seacr.peaks.relaxed.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_VehandDex_atWTVeh_seacr_relaxed.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_VehandDex_atWTVeh_seacr_relaxed_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_VehandDex_atWTVeh_seacr_relaxed.gz \
+	--colorMap Blues \
+	-x distance -z Nalm6_WT_LEF1_veh_seacr_relaxed \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex \
+	Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex \
+	Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_VehandDex_atWTVeh_seacr_relaxed_heatmap_nearest.png
+
+#Nalm6 WT, seacr stringent
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_Vehicle_R1.seacr.peaks.stringent.bed CnR_LEF1_Nalm6_Dex_R1.seacr.peaks.stringent.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig --skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_VehandDex_atWT_seacr_stringent.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_VehandDex_seacr_stringent_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_VehandDex_atWT_seacr_stringent.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_VehandDex_atWT_seacr_stringent_heatmap_nearest.png
+
+#Nalm6 TLE1 KO1, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_VehandDex_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atKO1_LEF1_VehandDex_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atKO1_LEF1_VehandDex_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO1_LEF1_veh_macs2 Nalm6_KO1_LEF1_dex_macs2 \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex \
+	Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex \
+	Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO1_narrowPeak_VehandDex_heatmap_nearest.png
+
+#Nalm6 TLE1 KO2, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.macs2_peaks.narrowPeak \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_VehandDex_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_atKO2_LEF1_VehandDex_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_atKO2_LEF1_VehandDex_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO2_LEF1_veh_macs2 Nalm6_KO2_LEF1_dex_macs2 \
+	--samplesLabel Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex \
+	Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex \
+	Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO2_narrowPeak_VehandDex_heatmap_nearest.png
+
+#compute signal ratio, Dex / Veh for LEF1
+#Nalm6 WT
+bamCompare --scaleFactorsMethod readCount -b1 CnR_LEF1_Nalm6_Dex_R1.target.markdup.sorted.bam -b2 CnR_LEF1_Nalm6_Vehicle_R1.target.markdup.sorted.bam -o Nalm6_dex_over_veh_LEF1_readCount_log2ratio.bw
+
+#Nalm6 KO1 (1B2)
+bamCompare --scaleFactorsMethod readCount -b1 CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.target.markdup.sorted.bam -b2 CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.target.markdup.sorted.bam -o Nalm6_1B2_dex_over_veh_LEF1_readCount_log2ratio.bw
+
+#Nalm6 KO2 (4B8)
+bamCompare --scaleFactorsMethod readCount -b1 CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.target.markdup.sorted.bam -b2 CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.target.markdup.sorted.bam -o Nalm6_4B8_dex_over_veh_LEF1_readCount_log2ratio.bw
+
+#SUPB15
+bamCompare --scaleFactorsMethod readCount -b1 CnR_LEF1_SUPB15_Dex_R1.target.markdup.sorted.bam -b2 CnR_LEF1_SUPB15_Vehicle_R1.target.markdup.sorted.bam -o SUPB15_dex_over_veh_LEF1_readCount_log2ratio.bw
+
+#BALL1
+bamCompare --scaleFactorsMethod readCount -p max -b1 CnR_LEF1_BALL1_Dex_R1.target.markdup.sorted.bam -b2 CnR_LEF1_BALL1_Vehicle_R1.target.markdup.sorted.bam -o BALL1_dex_over_veh_LEF1_readCount_log2ratio.bw
+
+#compute matrix for signal ratios at called peaks 
+#Nalm6 WT peaks, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_Dex_R1.macs2_peaks.narrowPeak \
+	-S Nalm6_dex_over_veh_LEF1_readCount_log2ratio.bw Nalm6_1B2_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	Nalm6_4B8_dex_over_veh_LEF1_readCount_log2ratio.bw --skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atWT_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_ratio.Dex.Veh_atWT_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atWT_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_WT_LEF1_veh Nalm6_WT_LEF1_dex \
+	--samplesLabel Nalm6_WT Nalm6_KO1 Nalm6_KO2 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_narrowPeak_ratio.dex.veh_atWT_heatmap_nearest.png
+
+#Nalm6 KO1 peaks, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.macs2_peaks.narrowPeak \
+	-S Nalm6_dex_over_veh_LEF1_readCount_log2ratio.bw Nalm6_1B2_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	Nalm6_4B8_dex_over_veh_LEF1_readCount_log2ratio.bw --skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atKO1_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_ratio.Dex.Veh_atKO1_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atKO1_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO1_LEF1_veh Nalm6_KO1_LEF1_dex \
+	--samplesLabel Nalm6_WT Nalm6_KO1 Nalm6_KO2 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_narrowPeak_ratio.dex.veh_atKO1_heatmap_nearest.png
+
+#Nalm6 KO2 peaks, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.macs2_peaks.narrowPeak \
+	-S Nalm6_dex_over_veh_LEF1_readCount_log2ratio.bw Nalm6_1B2_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	Nalm6_4B8_dex_over_veh_LEF1_readCount_log2ratio.bw --skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atKO2_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_ratio.Dex.Veh_atKO2_narrowPeak_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atKO2_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO2_LEF1_veh Nalm6_KO2_LEF1_dex \
+	--samplesLabel Nalm6_WT Nalm6_KO1 Nalm6_KO2 \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_narrowPeak_ratio.dex.veh_atKO2_heatmap_nearest.png
+
+#Nalm6 WT peaks, seacr
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_Nalm6_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_Nalm6_Dex_R1.seacr.peaks.relaxed.bed \
+	-S Nalm6_dex_over_veh_LEF1_readCount_log2ratio.bw Nalm6_1B2_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	Nalm6_4B8_dex_over_veh_LEF1_readCount_log2ratio.bw --skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atWT_seacr_relaxed.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_ratio.Dex.Veh_atWT_seacr_relaxed_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_ratio.dex.veh_atWT_seacr_relaxed.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_seacr_relaxed_ratio.dex.veh_heatmap_nearest.png
+
+#SUPB15, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_SUPB15_Dex_R1.macs2_peaks.narrowPeak \
+	-S SUPB15_dex_over_veh_LEF1_readCount_log2ratio.bw --skipZeros -o refpoint_matrix_SUPB15_LEF1_ratio.dex.veh_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_LEF1_ratio.Dex.Veh_narrowpeak_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_ratio.dex.veh_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z SUPB15_LEF1_veh_macs2 SUPB15_LEF1_dex_macs2 \
+	--samplesLabel SUPB15_dex_over_veh \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_narrowPeak_ratio.dex.veh_heatmap_nearest.png
+
+#SUPB15, seacr relaxed
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_SUPB15_Vehicle_R1.seacr.peaks.relaxed.bed CnR_LEF1_SUPB15_Dex_R1.seacr.peaks.relaxed.bed \
+	-S SUPB15_dex_over_veh_LEF1_readCount_log2ratio.bw --skipZeros -o refpoint_matrix_SUPB15_LEF1_seacr_relaxed_ratio.dex.veh.gz \
+	--outFileSortedRegions SUPB15_LEF1_seacr_relaxed_ratio.Dex.Veh_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_seacr_relaxed_ratio.dex.veh.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_seacr_relaxed_ratio.dex.veh_heatmap_nearest.png
+
+#BALL1, macs2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R CnR_LEF1_BALL1_Vehicle_R1.macs2_peaks.narrowPeak CnR_LEF1_BALL1_Dex_R1.macs2_peaks.narrowPeak \
+	-S BALL1_dex_over_veh_LEF1_readCount_log2ratio.bw --skipZeros -o refpoint_matrix_BALL1_LEF1_narrowPeak_ratio.dex.veh.gz \
+	--outFileSortedRegions BALL1_LEF1_narrowPeak_ratio.dex.veh_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_narrowPeak_ratio.dex.veh.gz \
+	--colorMap plasma \
+	-x distance -z BALL1_LEF1_veh BALL1_LEF1_dex \
+	--samplesLabel BALL1_LEF1_dex_over_veh \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_narrowPeak_ratio.dex.veh_heatmap_nearest.png
+
+module load bedtools/2.25.0  
+#Intersect veh and dex peaks
+#SUPB15
+bedtools intersect -a CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_SUPB15_Dex_R1.macs2_peaks.narrowPeak > SUPB15_LEF1_veh_INTERSECT_dex_narrowPeak.bed
+
+#BALL1
+bedtools intersect -a CnR_LEF1_BALL1_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_BALL1_Dex_R1.macs2_peaks.narrowPeak > BALL1_LEF1_veh_INTERSECT_dex_narrowPeak.bed
+
+#Nalm6 WT
+bedtools intersect -a CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_Nalm6_Dex_R1.macs2_peaks.narrowPeak > Nalm6_WT_LEF1_veh_INTERSECT_dex_narrowPeak.bed
+
+#Nalm6 TLE1 KO1
+bedtools intersect -a CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.macs2_peaks.narrowPeak > Nalm6_TLE1KO1_LEF1_veh_INTERSECT_dex_narrowPeak.bed
+
+#Nalm6 TLE1 KO2
+bedtools intersect -a CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.macs2_peaks.narrowPeak > Nalm6_TLE1KO2_LEF1_veh_INTERSECT_dex_narrowPeak.bed
+
+#vehicle only peaks
+#SUPB15
+bedtools intersect -a CnR_LEF1_SUPB15_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_SUPB15_Dex_R1.macs2_peaks.narrowPeak -v > SUPB15_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed
+
+#BALL1
+bedtools intersect -a CnR_LEF1_BALL1_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_BALL1_Dex_R1.macs2_peaks.narrowPeak -v > BALL1_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed
+
+#Nalm6 WT
+bedtools intersect -a CnR_LEF1_Nalm6_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_Nalm6_Dex_R1.macs2_peaks.narrowPeak -v > Nalm6_WT_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed
+
+#Nalm6 TLE1 KO1
+bedtools intersect -a CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.macs2_peaks.narrowPeak -v > Nalm6_TLE1KO1_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed
+
+#Nalm6 TLE1 KO2
+bedtools intersect -a CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.macs2_peaks.narrowPeak -b CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.macs2_peaks.narrowPeak -v > Nalm6_TLE1KO2_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed
+
+#compute matrix for shared peaks 
+#SUPB15
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SUPB15_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_LEF1_vehINTERSECTdex_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z SUPB15_LEF1_veh_intersect_dex_macs2 \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_vehINTERSECTdex_heatmap_nearest.png
+
+#SUPB15, ratio dex over veh
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SUPB15_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S SUPB15_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_LEF1_vehINTERSECTdex_ratio_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_vehINTERSECTdex_ratio_heatmap_nearest.png
+
+#BALL1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R BALL1_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S CnR_LEF1_BALL1_Vehicle_R1.bigWig CnR_LEF1_BALL1_Dex_R1.bigWig\
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--outFileSortedRegions BALL1_LEF1_vehINTERSECTdex_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_vehINTERSECTdex_heatmap_nearest.png
+
+#BAll1, ratio dex over veh
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R BALL1_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S BALL1_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--outFileSortedRegions BALL1_LEF1_vehINTERSECTdex_ratio_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z BALL1_LEF1_veh_intersect_dex \
+	--samplesLabel 
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_vehINTERSECTdex_ratio_heatmap_nearest.png
+
+#Nalm6 WT
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_WT_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WT_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WT_LEF1_vehINTERSECTdex_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_Nalm6_WT_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_WT_veh_intersect_dex \
+	--samplesLabel WT_veh WT_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WT_LEF1_vehINTERSECTdex_heatmap_nearest.png
+
+#Nalm6 WT, ratio dex over veh
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_WT_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S Nalm6_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	--skipZeros -o refpoint_matrix_Nalm6_WT_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WT_LEF1_vehINTERSECTdex_ratio_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_Nalm6_WT_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WT_LEF1_vehINTERSECTdex_ratio_heatmap_nearest.png
+
+#Nalm6 TLE1 KO1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO1_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO1_veh_intersect_dex \
+	--samplesLabel KO1_veh KO1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_heatmap_nearest.png
+
+#Nalm6 TLE1 KO1, ratio dex over veh
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO1_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S Nalm6_1B2_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_ratio_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehINTERSECTdex_ratio_heatmap_nearest.png
+
+#Nalm6 TLE1 KO2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO2_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO2_veh_intersect_dex \
+	--samplesLabel KO2_veh KO2_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_heatmap_nearest.png
+	
+#Nalm6 TLE1 KO2, ratio dex over veh
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO2_LEF1_veh_INTERSECT_dex_narrowPeak.bed \
+	-S Nalm6_4B8_dex_over_veh_LEF1_readCount_log2ratio.bw \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_ratio_sorted.bed
+	
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_ratio_narrowPeak.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehINTERSECTdex_ratio_heatmap_nearest.png
+
+#compute matrix for vehicle only peaks
+#SUPB15
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SUPB15_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_vehONLY_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_LEF1_vehONLY_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_vehONLY_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z SUPB15_LEF1_veh_only \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_LEF1_vehONLY_narrowPeak_heatmap_nearest.png
+
+#BALL1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R BALL1_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed \
+	-S CnR_LEF1_BALL1_Vehicle_R1.bigWig CnR_LEF1_BALL1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_vehONLY_narrowPeak.gz \
+	--outFileSortedRegions BALL1_LEF1_vehONLY_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_vehONLY_narrowPeak.gz \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_LEF1_vehONLY_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_WT_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WT_LEF1_vehONLY_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WT_LEF1_vehONLY_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WT_LEF1_vehONLY_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_WT_LEF1_veh_only \
+	--samplesLabel WT_veh WT_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WT_LEF1_vehONLY_narrowPeak_heatmap_auto.png
+
+#Nalm6 1B2, TLE1 KO1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO1_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehONLY_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO1_LEF1_vehONLY_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehONLY_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO1_LEF1_veh_only \
+	--samplesLabel KO1_veh KO1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO1_LEF1_vehONLY_narrowPeak_heatmap_nearest.png
+
+#Nalm6 4B8, TLE1 KO2
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_TLE1KO2_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehONLY_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_TLE1KO2_LEF1_vehONLY_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehONLY_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO2_LEF1_veh_only \
+	--samplesLabel KO2_veh KO2_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_TLE1KO2_LEF1_vehONLY_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT and KO at WT veh only 
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_WT_LEF1_veh_INTERSECT_dex_v_narrowPeak.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_WTvehONLY_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_WTvehONLY_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_WTvehONLY_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_WT_LEF1_veh_only \
+	--samplesLabel WT_veh WT_dex KO1_veh KO1_dex KO2_veh KO2_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_WTVehONLY_narrowPeak_heatmap_nearest.png
+
+#compute matrix, LEF1 at GR merged peaks
+#prepare peak files
+awk '{ if (NR>1) print $2,$3,$4}' OFS="\t" SUPB15_Dex_GR-BD_AllReps_merge.bed > SUPB15_Dex_GR-BD_AllReps_merge_edit.bed
+awk '{ if (NR>1) print $2,$3,$4}' OFS="\t" BALL1_Dex_GR-BD_AllReps_merge.bed > BALL1_Dex_GR-BD_AllReps_merge_edit.bed
+awk '{ if (NR>1) print $2,$3,$4}' OFS="\t" Nalm6_WT_Dex_GR-BD_Rep1_Rep2_merge.bed > Nalm6_WT_Dex_GR-BD_Rep1_Rep2_merge_edit.bed
+awk '{ if (NR>1) print $2,$3,$4}' OFS="\t" Nalm6_1B2_Dex_GR-BD_Rep2_Rep3_merge.bed > Nalm6_1B2_Dex_GR-BD_Rep2_Rep3_merge_edit.bed
+awk '{ if (NR>1) print $2,$3,$4}' OFS="\t" Nalm6_4B8_Dex_GR-BD_Rep1_Rep2_merge.bed > Nalm6_4B8_Dex_GR-BD_Rep1_Rep2_merge_edit.bed
+
+#SUPB15
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R SUPB15_Dex_GR-BD_AllReps_merge_edit.bed \
+	-S CnR_LEF1_SUPB15_Vehicle_R1.bigWig CnR_LEF1_SUPB15_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_SUPB15_LEF1_atGR-BD_narrowPeak.gz \
+	--outFileSortedRegions SUPB15_LEF1_atGR-BD_sorted.bed
+
+plotHeatmap -m refpoint_matrix_SUPB15_LEF1_atGR-BD_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z SUPB15_GR-BD_merge \
+	--samplesLabel SUPB15_LEF1_veh SUPB15_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_SUPB15_VehandDex_LEF1_atGR_narrowPeak_heatmap_nearest.png
+
+#BALL1
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R BALL1_Dex_GR-BD_AllReps_merge_edit.bed \
+	-S CnR_LEF1_BALL1_Vehicle_R1.bigWig CnR_LEF1_BALL1_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_BALL1_LEF1_atGR-BD_narrowPeak.gz \
+	--outFileSortedRegions BALL1_LEF1_atGR-BD_sorted.bed
+
+plotHeatmap -m refpoint_matrix_BALL1_LEF1_atGR-BD_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z BALL1_GR-BD_merge \
+	--samplesLabel BALL1_LEF1_veh BALL1_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_BALL1_VehandDex_LEF1_atGR_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT and KO at WT GR-BD peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_WT_Dex_GR-BD_Rep1_Rep2_merge_edit.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_atWT.GR-BD_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_atWT.GR-BD_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_atWT.GR-BD_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_WT_GR-BD_merge \
+	--samplesLabel WT__LEF1_veh WT_LEF1_dex KO1_LEF1_veh KO1_LEF1_dex KO2_LEF1_veh KO2_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_atWT.GR-BD_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT and KO at KO1 GR-BD peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_1B2_Dex_GR-BD_Rep2_Rep3_merge_edit.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_atKO1.GR-BD_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_atKO1.GR-BD_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_atKO1.GR-BD_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO1_GR-BD_merge \
+	--samplesLabel WT__LEF1_veh WT_LEF1_dex KO1_LEF1_veh KO1_LEF1_dex KO2_LEF1_veh KO2_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_atKO1.GR-BD_narrowPeak_heatmap_nearest.png
+
+#Nalm6 WT and KO at KO2 GR-BD peaks
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -p 8 \
+	-R Nalm6_4B8_Dex_GR-BD_Rep1_Rep2_merge_edit.bed \
+	-S CnR_LEF1_Nalm6_Vehicle_R1.bigWig CnR_LEF1_Nalm6_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO1_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO1_Dex_R1.bigWig \
+	CnR_LEF1_Nalm6_TLE1KO2_Vehicle_R1.bigWig CnR_LEF1_Nalm6_TLE1KO2_Dex_R1.bigWig \
+	--skipZeros -o refpoint_matrix_Nalm6_WTandKO_LEF1_atKO2.GR-BD_narrowPeak.gz \
+	--outFileSortedRegions Nalm6_WTandKO_LEF1_atKO2.GR-BD_sorted.bed
+
+plotHeatmap -m refpoint_matrix_Nalm6_WTandKO_LEF1_atKO2.GR-BD_narrowPeak.gz \
+	--colorMap plasma \
+	-x distance -z Nalm6_KO2_GR-BD_merge \
+	--samplesLabel WT__LEF1_veh WT_LEF1_dex KO1_LEF1_veh KO1_LEF1_dex KO2_LEF1_veh KO2_LEF1_dex \
+	--interpolationMethod nearest \
+	-out refpoint_matrix_Nalm6_WTandKO_LEF1_atKO2.GR-BD_narrowPeak_heatmap_nearest.png
