@@ -1,0 +1,23 @@
+#BSUB -P savicgrp
+#BSUB -oo HOMER%J_%I.out 
+#BSUB -eo HOMER%J_%I.err
+#BSUB -n 4
+#BSUB -q standard
+#BSUB -R "span[hosts=1] rusage[mem=8000]"
+#BSUB -J "HOMER[1-8]"
+
+#paste <(ls -1 *.bed) > bed_list.tsv
+
+id=$LSB_JOBINDEX
+
+FILE_LIST=/research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space/bed_list.tsv
+BED=`head -n $id ${FILE_LIST}|tail -n1|awk '{print $1}'`
+OUT_DIR=/research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space/HOMER
+NAME=`basename $BED .bed`
+CORES=4
+PREPAR_DIR=/research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_822469_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space/preparsed_homer
+
+cd /research_jude/rgs01_jude/groups/savicgrp/projects/Drug_GRNs/savicgrp/savicgrp_824476_ChIPseq-1/nextflow_results/bowtie2/mergedLibrary/working_space
+
+module load homer/4.10
+findMotifsGenome.pl ${BED} hg19 ${OUT_DIR}/${NAME} -size 50 -p ${CORES} -preparsedDir ${PREPAR_DIR}
